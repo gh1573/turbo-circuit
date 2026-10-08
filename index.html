@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🏎️</text></svg>" />
+    <title>极速赛道 · Turbo Circuit</title>
+  </head>
+  <body>
+    <div id="app"></div>
+
+    <!-- 比赛 HUD -->
+    <div id="hud" class="hidden">
+      <div id="speed-box">
+        <div id="speed">0</div>
+        <div class="unit">km/h</div>
+      </div>
+      <div id="race-info">
+        <div id="lap">第 1 / 3 圈</div>
+        <div id="race-time">00:00.0</div>
+        <div id="lap-times">
+          <span>本圈 <b id="last-lap">--:--.-</b></span>
+          <span>最快 <b id="best-lap">--:--.-</b></span>
+        </div>
+      </div>
+      <canvas id="minimap" width="200" height="200"></canvas>
+      <div id="message" class="hidden"></div>
+      <div id="wrong-way" class="hidden">⚠ 逆行！</div>
+      <div id="speed-vignette"></div>
+    </div>
+
+    <!-- 触屏控制 -->
+    <div id="touch-controls" class="hidden">
+      <div class="tc-left">
+        <button id="btn-left" class="tc-btn">◀</button>
+        <button id="btn-right" class="tc-btn">▶</button>
+      </div>
+      <div class="tc-right">
+        <button id="btn-brake" class="tc-btn">刹车</button>
+        <button id="btn-gas" class="tc-btn">油门</button>
+      </div>
+    </div>
+
+    <!-- 主菜单 -->
+    <div id="menu" class="overlay">
+      <h1>极速赛道</h1>
+      <p class="subtitle">TURBO CIRCUIT · 3 圈计时赛</p>
+      <div id="color-row"></div>
+      <button id="start-btn" class="primary">开始比赛</button>
+      <p class="help">
+        方向键 / WASD 驾驶 · 空格 漂移 · R 重置 · M 静音 · Esc 暂停
+      </p>
+    </div>
+
+    <!-- 完赛 -->
+    <div id="finish" class="overlay hidden">
+      <h1>比赛完成！</h1>
+      <div id="final-stats"></div>
+      <button id="restart-btn" class="primary">再来一局</button>
+    </div>
+
+    <!-- 暂停 -->
+    <div id="pause" class="overlay hidden">
+      <h1>暂停</h1>
+      <button id="resume-btn" class="primary">继续</button>
+      <button id="quit-btn">回到主菜单</button>
+    </div>
+
+    <!-- 倒计时 -->
+    <div id="countdown" class="hidden"></div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
