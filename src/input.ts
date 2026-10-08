@@ -95,7 +95,11 @@ export class Input {
       if (!el) return;
       const on = (e: PointerEvent) => {
         e.preventDefault();
-        el.setPointerCapture(e.pointerId);
+        try {
+          el.setPointerCapture(e.pointerId);
+        } catch {
+          // 指针已失效时忽略，仍记录按下状态
+        }
         this.touchState[key] = true;
       };
       const off = (e: PointerEvent) => {
