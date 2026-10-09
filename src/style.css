@@ -181,6 +181,25 @@ body {
   pointer-events: auto;
 }
 
+.tc-right {
+  flex-direction: column;
+  align-items: center;
+}
+
+.tc-row {
+  display: flex;
+  gap: 16px;
+}
+
+.tc-drift {
+  width: 72px;
+  height: 56px;
+  border-radius: 16px;
+  font-size: 16px;
+  background: rgba(120, 40, 200, 0.45);
+  border-color: rgba(200, 150, 255, 0.5);
+}
+
 .tc-left {
   left: 24px;
 }
@@ -204,6 +223,10 @@ body {
 
 .tc-btn:active {
   background: rgba(255, 190, 60, 0.5);
+}
+
+.tc-drift:active {
+  background: rgba(160, 80, 255, 0.65);
 }
 
 /* ---------- 覆盖层 ---------- */
