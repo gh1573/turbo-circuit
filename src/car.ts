@@ -6,6 +6,7 @@ export interface CarInput {
   steer: number; // -1..1
   handbrake: boolean;
   offTrack: boolean;
+  nitro: boolean;
 }
 
 export interface CarState {
@@ -14,6 +15,8 @@ export interface CarState {
 }
 
 const MAX_SPEED = 44; // m/s ≈ 158 km/h
+const NITRO_BOOST = 12; // 氮气极速增量
+const NITRO_ACCEL = 20; // 氮气加速增量
 const ACCEL = 21;
 const BRAKE_DECEL = 40;
 const REVERSE_MAX = -9;
@@ -29,6 +32,8 @@ export class Car {
   private steerAngle = 0;
   private paint: THREE.MeshStandardMaterial;
   private wheels: Array<{ pivot: THREE.Group; spin: THREE.Mesh }> = [];
+  private flames: THREE.Mesh[] = [];
+  private flameMat!: THREE.MeshBasicMaterial;
 
   constructor() {
     this.paint = new THREE.MeshStandardMaterial({
@@ -107,6 +112,22 @@ export class Car {
     tail.position.set(0, 0.72, -2.17);
     g.add(tail);
 
+    // 氮气尾焰
+    this.flameMat = new THREE.MeshBasicMaterial({
+      color: 0x66d9ff,
+      transparent: true,
+      opacity: 0.85,
+    });
+    const flameGeo = new THREE.ConeGeometry(0.1, 0.55, 8);
+    flameGeo.rotateX(-Math.PI / 2); // 朝后 (-z)
+    for (const side of [-1, 1]) {
+      const flame = new THREE.Mesh(flameGeo, this.flameMat);
+      flame.position.set(side * 0.5, 0.48, -2.3);
+      flame.visible = false;
+      g.add(flame);
+      this.flames.push(flame);
+    }
+
     // 车轮
     const tireGeo = new THREE.CylinderGeometry(0.37, 0.37, 0.34, 20);
     tireGeo.rotateZ(Math.PI / 2);
@@ -142,6 +163,17 @@ export class Car {
     });
   }
 
+  /** 氮气尾焰视觉开关（AI/外部调用） */
+  setNitroVisual(on: boolean): void {
+    for (const f of this.flames) f.visible = on;
+  }
+
+  /** AI 用：只滚动车轮 */
+  spinWheels(speed: number, dt: number): void {
+    const spinDelta = (speed / 0.37) * dt;
+    for (const w of this.wheels) w.spin.rotation.x += spinDelta;
+  }
+
   /**
    * 街机式车辆物理。
    * 速度标量 + 速度向量混合：转向改变车头方向，速度向量以 gri p 向期望速度收敛，
@@ -154,9 +186,11 @@ export class Car {
     const steerTarget = input.steer * (0.62 - 0.44 * speedRatio);
     this.steerAngle += (steerTarget - this.steerAngle) * Math.min(1, dt * 9);
 
-    // 纵向动力
+    // 纵向动力（氮气提升加速与极速）
+    const nitro = input.nitro;
     if (input.throttle > 0) {
-      this.speed += input.throttle * ACCEL * dt;
+      this.speed +=
+        input.throttle * (ACCEL + (nitro ? NITRO_ACCEL : 0)) * dt;
     }
     if (input.brake > 0) {
       if (this.speed > 0.6) {
@@ -172,7 +206,8 @@ export class Car {
       this.speed -= this.speed * 1.9 * dt;
     }
 
-    this.speed = THREE.MathUtils.clamp(this.speed, REVERSE_MAX, MAX_SPEED);
+    const currentMax = nitro ? MAX_SPEED + NITRO_BOOST : MAX_SPEED;
+    this.speed = THREE.MathUtils.clamp(this.speed, REVERSE_MAX, currentMax);
     if (input.throttle === 0 && input.brake === 0 && Math.abs(this.speed) < 0.25) {
       this.speed = 0;
     }
@@ -200,6 +235,13 @@ export class Car {
       const w = this.wheels[i];
       w.spin.rotation.x += spinDelta;
       if (i < 2) w.pivot.rotation.y = this.steerAngle;
+    }
+
+    // 尾焰闪烁
+    if (nitro) {
+      for (const f of this.flames) {
+        f.scale.set(1, 1, 0.7 + Math.random() * 0.8);
+      }
     }
 
     // 滑移角

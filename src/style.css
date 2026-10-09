@@ -74,10 +74,51 @@ body {
   backdrop-filter: blur(6px);
 }
 
-#lap {
-  font-size: 20px;
+#top-row {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  font-size: 15px;
   font-weight: 700;
-  letter-spacing: 2px;
+  letter-spacing: 1px;
+}
+
+#position {
+  color: #ffd34d;
+}
+
+#lap {
+  color: #aebccb;
+  font-size: 15px;
+}
+
+#score-line {
+  font-size: 13px;
+  color: #aebccb;
+  font-variant-numeric: tabular-nums;
+  margin-top: 4px;
+}
+
+#score-line b {
+  color: #7ee0a3;
+  font-size: 15px;
+}
+
+#combo {
+  color: #ffb03c;
+  font-weight: 800;
+  margin-left: 6px;
+  display: inline-block;
+  animation: combo-pulse 0.4s ease-out;
+}
+
+@keyframes combo-pulse {
+  from {
+    transform: scale(1.5);
+  }
+  to {
+    transform: scale(1);
+  }
 }
 
 #race-time {
@@ -98,6 +139,55 @@ body {
 
 #lap-times b {
   color: #e8eef4;
+}
+
+#nitro-box {
+  position: absolute;
+  left: 50%;
+  bottom: 28px;
+  transform: translateX(-50%);
+  width: 220px;
+  height: 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(10, 14, 22, 0.6);
+  overflow: hidden;
+  backdrop-filter: blur(4px);
+}
+
+#nitro-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #2b7de6, #35d5ff);
+  transition: width 0.1s linear;
+}
+
+#nitro-box.full #nitro-fill {
+  animation: nitro-pulse 0.8s ease-in-out infinite;
+}
+
+#nitro-box.active {
+  box-shadow: 0 0 18px rgba(53, 213, 255, 0.8);
+  border-color: #35d5ff;
+}
+
+@keyframes nitro-pulse {
+  50% {
+    filter: brightness(1.6);
+  }
+}
+
+.nitro-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: rgba(255, 255, 255, 0.85);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
 }
 
 #minimap {
@@ -192,12 +282,17 @@ body {
 }
 
 .tc-drift {
-  width: 72px;
-  height: 56px;
-  border-radius: 16px;
-  font-size: 16px;
   background: rgba(120, 40, 200, 0.45);
   border-color: rgba(200, 150, 255, 0.5);
+}
+
+.tc-nitro {
+  background: rgba(20, 90, 160, 0.5);
+  border-color: rgba(80, 200, 255, 0.55);
+}
+
+.tc-nitro:active {
+  background: rgba(60, 180, 255, 0.65);
 }
 
 .tc-left {
@@ -338,6 +433,12 @@ body {
   color: #ffd34d;
 }
 
+#final-drift {
+  font-size: 16px;
+  color: #7ee0a3;
+  font-variant-numeric: tabular-nums;
+}
+
 #countdown {
   position: fixed;
   inset: 0;
@@ -391,5 +492,14 @@ body {
 
   #race-time {
     font-size: 22px;
+  }
+
+  #nitro-box {
+    bottom: 210px;
+    width: 180px;
+  }
+
+  #speed-box {
+    bottom: 140px;
   }
 }

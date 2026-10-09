@@ -18,6 +18,7 @@ export class HUD {
   private hudEl: HTMLElement;
   private speedEl: HTMLElement;
   private lapEl: HTMLElement;
+  private positionEl: HTMLElement;
   private raceTimeEl: HTMLElement;
   private lastLapEl: HTMLElement;
   private bestLapEl: HTMLElement;
@@ -29,6 +30,11 @@ export class HUD {
   private finishEl: HTMLElement;
   private pauseEl: HTMLElement;
   private finalStatsEl: HTMLElement;
+  private finalDriftEl: HTMLElement;
+  private scoreEl: HTMLElement;
+  private comboEl: HTMLElement;
+  private nitroBoxEl: HTMLElement;
+  private nitroFillEl: HTMLElement;
   private minimap: HTMLCanvasElement;
   private mmCtx: CanvasRenderingContext2D;
   private mapPoints: Array<[number, number]> = [];
@@ -42,6 +48,7 @@ export class HUD {
     this.hudEl = $("hud");
     this.speedEl = $("speed");
     this.lapEl = $("lap");
+    this.positionEl = $("position");
     this.raceTimeEl = $("race-time");
     this.lastLapEl = $("last-lap");
     this.bestLapEl = $("best-lap");
@@ -53,6 +60,11 @@ export class HUD {
     this.finishEl = $("finish");
     this.pauseEl = $("pause");
     this.finalStatsEl = $("final-stats");
+    this.finalDriftEl = $("final-drift");
+    this.scoreEl = $("score");
+    this.comboEl = $("combo");
+    this.nitroBoxEl = $("nitro-box");
+    this.nitroFillEl = $("nitro-fill");
     this.minimap = $("minimap") as HTMLCanvasElement;
     this.mmCtx = this.minimap.getContext("2d")!;
 
@@ -113,6 +125,33 @@ export class HUD {
 
   setLap(cur: number, total: number): void {
     this.lapEl.textContent = `第 ${Math.min(cur, total)} / ${total} 圈`;
+  }
+
+  setPosition(rank: number, total: number): void {
+    this.positionEl.textContent = `第 ${rank} / ${total} 名`;
+  }
+
+  setScore(score: number, combo: number): void {
+    this.scoreEl.textContent = String(Math.round(score));
+    if (combo >= 1.5) {
+      const text = `x${combo.toFixed(1)}`;
+      if (this.comboEl.textContent !== text) {
+        this.comboEl.textContent = text;
+        this.comboEl.classList.remove("hidden");
+        // 重启动画
+        this.comboEl.style.animation = "none";
+        void this.comboEl.offsetWidth;
+        this.comboEl.style.animation = "";
+      }
+    } else {
+      this.comboEl.classList.add("hidden");
+    }
+  }
+
+  setNitro(ratio: number, active: boolean): void {
+    this.nitroFillEl.style.width = `${Math.round(ratio * 100)}%`;
+    this.nitroBoxEl.classList.toggle("full", ratio >= 0.999);
+    this.nitroBoxEl.classList.toggle("active", active);
   }
 
   setTime(t: number): void {
@@ -216,10 +255,18 @@ export class HUD {
     this.menuEl.classList.remove("hidden");
   }
 
-  showFinish(totalTime: number, bestLap: number | null): void {
+  showFinish(
+    totalTime: number,
+    bestLap: number | null,
+    rank: number,
+    racers: number,
+    driftScore: number,
+  ): void {
     this.finalStatsEl.innerHTML =
       `总用时 <b>${formatTime(totalTime)}</b><br>` +
-      `最快单圈 <b>${bestLap === null ? "--:--.-" : formatTime(bestLap)}</b>`;
+      `最快单圈 <b>${bestLap === null ? "--:--.-" : formatTime(bestLap)}</b><br>` +
+      `最终排名 <b>第 ${rank} / ${racers} 名</b>`;
+    this.finalDriftEl.textContent = `漂移总分 ${Math.round(driftScore)}`;
     this.hideOverlays();
     this.finishEl.classList.remove("hidden");
   }

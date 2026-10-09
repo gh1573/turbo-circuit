@@ -1,6 +1,6 @@
 export class Input {
   private keys = new Set<string>();
-  private touchState = { left: false, right: false, gas: false, brake: false, handbrake: false };
+  private touchState = { left: false, right: false, gas: false, brake: false, handbrake: false, nitro: false };
 
   private _reset = false;
   private _mute = false;
@@ -28,7 +28,7 @@ export class Input {
     });
     window.addEventListener("blur", () => {
       this.keys.clear();
-      this.touchState = { left: false, right: false, gas: false, brake: false, handbrake: false };
+      this.touchState = { left: false, right: false, gas: false, brake: false, handbrake: false, nitro: false };
     });
   }
 
@@ -62,6 +62,14 @@ export class Input {
 
   get handbrake(): boolean {
     return this.keys.has("Space") || this.touchState.handbrake;
+  }
+
+  get nitro(): boolean {
+    return (
+      this.keys.has("ShiftLeft") ||
+      this.keys.has("ShiftRight") ||
+      this.touchState.nitro
+    );
   }
 
   consumeReset(): boolean {
@@ -116,5 +124,6 @@ export class Input {
     bind("btn-gas", "gas");
     bind("btn-brake", "brake");
     bind("btn-drift", "handbrake");
+    bind("btn-nitro", "nitro");
   }
 }

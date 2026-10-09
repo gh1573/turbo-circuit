@@ -16,12 +16,23 @@
         <div class="unit">km/h</div>
       </div>
       <div id="race-info">
-        <div id="lap">第 1 / 3 圈</div>
+        <div id="top-row">
+          <span id="position">第 4 / 4 名</span>
+          <span id="lap">第 1 / 3 圈</span>
+        </div>
         <div id="race-time">00:00.0</div>
         <div id="lap-times">
           <span>本圈 <b id="last-lap">--:--.-</b></span>
           <span>最快 <b id="best-lap">--:--.-</b></span>
         </div>
+        <div id="score-line">
+          漂移 <b id="score">0</b>
+          <span id="combo" class="hidden">x1.0</span>
+        </div>
+      </div>
+      <div id="nitro-box">
+        <div id="nitro-fill"></div>
+        <span class="nitro-label">氮气 SHIFT</span>
       </div>
       <canvas id="minimap" width="200" height="200"></canvas>
       <div id="message" class="hidden"></div>
@@ -36,7 +47,10 @@
         <button id="btn-right" class="tc-btn">▶</button>
       </div>
       <div class="tc-right">
-        <button id="btn-drift" class="tc-btn tc-drift">漂移</button>
+        <div class="tc-row">
+          <button id="btn-nitro" class="tc-btn tc-nitro">氮气</button>
+          <button id="btn-drift" class="tc-btn tc-drift">漂移</button>
+        </div>
         <div class="tc-row">
           <button id="btn-brake" class="tc-btn">刹车</button>
           <button id="btn-gas" class="tc-btn">油门</button>
@@ -51,7 +65,7 @@
       <div id="color-row"></div>
       <button id="start-btn" class="primary">开始比赛</button>
       <p class="help">
-        方向键 / WASD 驾驶 · 空格 漂移 · R 重置 · M 静音 · Esc 暂停
+        方向键 / WASD 驾驶 · 空格 漂移 · Shift 氮气 · R 重置 · M 静音 · Esc 暂停
       </p>
     </div>
 
@@ -59,6 +73,7 @@
     <div id="finish" class="overlay hidden">
       <h1>比赛完成！</h1>
       <div id="final-stats"></div>
+      <div id="final-drift"></div>
       <button id="restart-btn" class="primary">再来一局</button>
     </div>
 
